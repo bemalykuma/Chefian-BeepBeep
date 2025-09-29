@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chefian Beep Beep</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/x-icon" href="images/logo.png">
+</head>
+<body>
+    <nav>
+        <div class="navbar">
+            <div class="logo">
+                <img class="icon" src="images/logo_icon.png" alt="">
+                <p>Chefian Beep Beep</p>
+            </div>
+            
+            <div class="hamburger" onclick="toggleMenu()">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+
+            <div class="menu" id="menu">
+                <a href="#project">Project</a>
+                <a href="#tools">Tools</a>
+                <a href="#source">Source Code</a>
+                <a href="#video">Video</a>
+                <a href="#aboutus">About Us</a>
+            </div>
+        </div>
+    </nav>
+<!-- 
+        <section id="HOME">
+        <div style="width: 100%; background-color: #ff2aad; height: 800px; margin-top: 0px; color: black;">
+            <h1 style="color: black;">CHEFIAN BEEP BEEP</h1>
+            <p>Details about the source will go here.</p>
+        </div>
+    </section> -->
+
+    <section id="project">
+        <div class="content">
+            <h1>Project</h1>
+            <div class="project-card">
+                <div class="card">
+                    <img src="images/project.png" alt="Project Image">
+                </div>
+                <div class="detail">
+                    <h2>Abstract</h2>
+                    <p>เป็นโปรเจคที่ช่วยทำให้การเข้าถึงที่จอดรถ สะดวก ปลอดภัย และรวดเร็ว ผ่านการตรวจจับป้ายทะเบียนอัตโนมัติ โดยโปรเจคนี้นำ Computer Vision (OpenCV) และ ภาษา Python มาทำงานร่วมกับการเชื่อมต่อกับอุปกรณ์ IoT/Arduino เพื่อควบคุมการเปิด-ปิดประตูอัตโนมัติ มีการนำ License Plate Recognition (LPR) มาใช้เพื่อการควบคุมการเข้าถึงโดยตรง เพิ่มความสะดวกสบาย โดยที่ผู้ใช้ไม่ต้องใช้รีโมตหรือบัตร RFID แบบเดิม แค่ป้ายทะเบียนรถก็เพียงพอในการยืนยันตัวตน และโปรเจคนี้มีฟังก์ชันในการตรวจสอบจำนวนที่จอดรถที่เหลืออยู่ และแสดงผลผ่านหน้าเว็บไซต์ให้ผู้ใช้สามารถเข้ามาตรวจสอบได้แบบเรียลไทม์ ทำให้ผู้ใช้ตัดสินใจได้ทันทีว่าจะขับรถเข้ามาจอดหรือไม่</p>
+                    <h2>Objective</h2>
+                    <li>เพื่อแก้ปัญหาการเปิด-ปิดประตูที่ยุ่งยาก</li>
+                    <li>เพื่อให้การเข้าถึงที่จอดรถ สะดวก ปลอดภัย และรวดเร็ว</li>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section id="tools">
+        <div class="content">
+            <h1>Tools</h1>
+            <div class="tools-container">
+                <div class="tool_card">
+                    <p>Arduino R4</p>
+                    <img src="images/arduino.png" alt="">
+                </div>
+                <div class="tool_card">
+                    <p>ESP32-CAM</p>
+                    <img src="images/esp32-cam.png" alt="">
+                </div>
+                <div class="tool_card">
+                    <p>HC-SR04</p>
+                    <img src="images/HC-SR04.png" alt="">
+                </div>
+                <div class="tool_card">
+                    <p>Infrared Sensor</p>
+                    <img src="images/infrared.png" alt="">
+                </div>
+                <div class="tool_card">
+                    <p>Servo Motor</p>
+                    <img src="images/servo.png" alt="">
+                </div>
+            </div>
+        </div>
+    </section>
+    <section id="source">
+        <div class="content">
+            <h1>Source Code</h1>
+            <p>Details about the source will go here.</p>
+        </div>
+    </section>
+    <section id="video">
+        <div class="content">
+            <h1>Demo Video</h1>
+            <div class="video-container">
+<iframe width="560" height="315" src="https://www.youtube.com/embed/EvuXIk2Bh78?si=MZwT0kiLbpRJkvXr" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>            </div>
+        </div>
+    </section>
+    <section id="aboutus">
+        <div class="content">
+            <h1>About Us</h1>
+            <div class="team-members">
+                <div class="member">
+                    <img src="images/pitch.png" alt="pitch">
+                    <p>นายนิพพิชฌน์ คงห้วยรอบ</p>
+                    <p>67070092</p>
+                </div>
+                <div class="member">
+                    <img src="images/toby.png" alt="toby">
+                    <p>นายพรพิพัฒน์ ลลิตวิภาส</p>
+                    <p>67070109</p>
+                </div>
+                <div class="member">
+                    <img src="images/bamboo.png" alt="bamboo">
+                    <p>นางสาวเยาวภา ถาวริวิริยะนันท์</p>
+                    <p>67070148</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    <footer>
+        <p>&copy; 2025 Chefian Beep Beep.</p>
+    </footer>
+    <script>
+        function toggleMenu() {
+            const menu = document.getElementById('menu');
+            menu.classList.toggle('show');
+        }
+    </script>
+</body>
+</html>
