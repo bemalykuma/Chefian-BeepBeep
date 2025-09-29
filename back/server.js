@@ -72,6 +72,41 @@ app.get("/", (req, res) => {
   res.send("Server is running!");
 });
 
+app.post("/api/register", async (req, res) => {
+
+
+  try {
+    const results = req.body;
+
+    const sql = "insert into user(username, email, phone) values (?,?,?)"
+    const sql2 = "insert into car(license, user) values (?,?)"
+
+    db.query(sql, [results.username, results.email, results.phone], (err, result1) => {
+      if (err) {
+        return res.status(500).json({ error: err })
+      }
+
+      const userId = result1.insertId;
+
+      db.query(sql2, [results.license, userId], (err, result2) => {
+        if (err) {
+          return res.status(500).json({ error: err })
+        }
+
+        res.json({
+          status: "ok",
+          userId: userId,
+          license: results.license
+        });
+      })
+    });
+
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
 const amount_car = [];
 
 app.post("/api/dataPy", async (req, res) => {
