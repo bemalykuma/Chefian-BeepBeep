@@ -10,11 +10,11 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-body  {
+body {
   padding: 0;
   margin: 0;
   box-sizing: border-box;
-  background-color: transparent!important;
+  background-color: transparent !important;
 }
 
 a {
@@ -65,4 +65,21 @@ a {
 
 .navbar.bg-transparent {
   background-color: transparent !important;
+}
+
+.place-hd-fs::placeholder {
+  font-size: 15px !important;
+}
+
+.bg-blue {
+  background-color: #5a718b;
+}
+
+.p-8 {
+  padding-bottom: 10rem;
+}
+
+
+.img-size-fix{
+  max-width: 120px;
 }

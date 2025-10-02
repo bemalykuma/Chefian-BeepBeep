@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Routes, Route, NavLink } from "react-router-dom";
 import Dashboard from "./Dashboard";
+import Apply from "./Apply";
+import Parking from "./Parking";
 function Nav() {
   return (
     <>
@@ -48,13 +50,35 @@ function Nav() {
                 Insight
               </NavLink>
             </li>
+            <li className="nav-item mx-2 my-0 hover-nav">
+              <NavLink
+                to="/apply"
+                className={({ isActive }) =>
+                  isActive ? "fw-bold nav-link active-link" : "nav-link fj-set"
+                }
+              >
+                Apply
+              </NavLink>
+            </li>
+            <li className="nav-item mx-2 my-0 hover-nav">
+              <NavLink
+                to="/parking"
+                className={({ isActive }) =>
+                  isActive ? "fw-bold nav-link active-link" : "nav-link fj-set"
+                }
+              >
+                Parking
+              </NavLink>
+            </li>
           </ul>
         </div>
       </nav>
 
       <Routes>
-        <Route path="/dashboard" element={<Dashboard/>} /> 
+        <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/insight" element={<></>} />
+        <Route path="/apply" element={<Apply />} />
+        <Route path="/parking" element={<Parking />} />
       </Routes>
     </>
   );
