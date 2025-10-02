@@ -83,3 +83,7 @@ a {
 .img-size-fix{
   max-width: 120px;
 }
+
+.svg_right{
+  transform: rotate(180deg);
+}

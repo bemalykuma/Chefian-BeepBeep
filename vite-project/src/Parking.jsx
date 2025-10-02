@@ -1,6 +1,8 @@
 import { React, useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowUp } from "@fortawesome/free-solid-svg-icons";
+import axios from "axios";
+
 import car1 from "./assets/car1.svg";
 import car2 from "./assets/car2.svg";
 import car3 from "./assets/car3.svg";
@@ -15,21 +17,21 @@ function Parking() {
   const images = [car1, car2, car3, car4, car5, car6, car7, car8, car9];
 
   // สุ่มรูปแต่ละกล่อง
-  const boxes = Array.from({ length: 9 }, () => {
+  const getRandomImage = () => {
     const randomIndex = Math.floor(Math.random() * images.length);
     return images[randomIndex];
-  });
+  };
 
-  const [data, setData] = useState([]);
+  const [slotData, setSlotData] = useState([]);
+
   const BACKEND_URL = "http://localhost:5000/api/carSlot";
 
   const fetchData = async () => {
     try {
       const response = await axios.get(BACKEND_URL);
-      setData(response.data.amount_car);
-      console.log("Fetched data:", response.data.amount_car);
+      setSlotData(response.data.slot[0]);
+      console.log("Fetched slot data:", response.data.slot[0]);
     } catch (error) {
-      console.error(response.data.value);
       console.error("Error fetching data:", error);
     }
   };
@@ -44,40 +46,89 @@ function Parking() {
   return (
     <>
       <div className="container bg-blue p-5 h-100 w-md-50">
+        <div className="">
+          <h2 className="text-light">Slot Available</h2>
+          {Object.entries(slotData).map(([key, val]) => {
+            return (
+              val === 0 && (
+                <h4 className="text-light fw-normal" key={key}>{key.replace(/slot(\d+)/, 'slot $1')}</h4>
+              )
+            );
+          })}
+        </div>
+
         <div className="row g-5">
           {/* ซีกซ้าย */}
-          <div className="col-6 col-md-6">
-            {boxes.slice(0, 1).map((img, i) => (
-              <div
-                key={i}
-                className="w-50 px-3 border-start border-top border-3 border-white d-flex"
-              >
-                <span className="my-5"></span>
+          <div className="col-6 col-md-6 d-flex flex-column align-items-end">
+            <div className="w-50 px-3 border-start border-top border-3 border-white d-flex">
+              <span className="my-5"></span>
+              {slotData.slot1 === 1 && (
                 <img
-                  src={img}
+                  src={getRandomImage()}
                   className="img-size-fix"
-                  alt={`img-${i}`}
+                  alt="slot1-image"
                   draggable={false}
                 />
-              </div>
-            ))}
-
-            <div className="px-3 w-50 border-start border-top border-3 border-white d-flex">
-              <span className="my-5"></span>
-              {/* <img src={randomImage} className="img-size-fix" /> */}
+              )}
             </div>
-            <div className="px-3 w-50 border-start border-top border-bottom border-3 border-white d-flex">
+            <div className="w-50 px-3 border-start border-top border-3 border-white d-flex">
               <span className="my-5"></span>
-              {/* <img src={randomImage} className="img-size-fix" /> */}
+              {slotData.slot2 === 1 && (
+                <img
+                  src={getRandomImage()}
+                  className="img-size-fix"
+                  alt="slot1-image"
+                  draggable={false}
+                />
+              )}
+            </div>
+            <div className="w-50 px-3 border-start border-top border-bottom border-3 border-white d-flex">
+              <span className="my-5"></span>
+              {slotData.slot3 === 1 && (
+                <img
+                  src={getRandomImage()}
+                  className="img-size-fix"
+                  alt="slot1-image"
+                  draggable={false}
+                />
+              )}
             </div>
           </div>
 
           {/* ซีกขวา */}
           <div className="col-6 col-md-6">
-            <div className="px-3 py-4 border-park border-3">ซีกขวา - แถว 1</div>
-            <div className="px-3 py-4 border-park border-3">ซีกขวา - แถว 2</div>
-            <div className="px-3 py-4 border-park-top border-3">
-              ซีกขวา - แถว 3
+            <div className="w-50 px-3 border-end border-top border-3 border-white d-flex justify-content-end">
+              <span className="my-5"></span>
+              {slotData.slot4 === 1 && (
+                <img
+                  src={getRandomImage()}
+                  className="img-size-fix svg_right"
+                  alt="slot1-image"
+                  draggable={false}
+                />
+              )}
+            </div>
+            <div className="w-50 px-3 border-end border-top border-3 border-white d-flex justify-content-end">
+              <span className="my-5"></span>
+              {slotData.slot5=== 1 && (
+                <img
+                  src={getRandomImage()}
+                  className="img-size-fix svg_right"
+                  alt="slot1-image"
+                  draggable={false}
+                />
+              )}
+            </div>
+            <div className="w-50 px-3 border-end border-top border-bottom border-3 border-white d-flex justify-content-end">
+              <span className="my-5"></span>
+              {slotData.slot6 === 1 && (
+                <img
+                  src={getRandomImage()}
+                  className="img-size-fix svg_right"
+                  alt="slot1-image"
+                  draggable={false}
+                />
+              )}
             </div>
           </div>
         </div>
