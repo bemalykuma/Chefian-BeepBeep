@@ -13,8 +13,8 @@ app.use(express.text({ type: 'text/plain', defaultCharset: 'utf-8' }));
 const db = mysql.createConnection({
   host: 'localhost',
   user: 'root',
-  password: '...',
-  database: '...'
+  password: '1234',
+  database: 'sys'
 });
 
 
@@ -72,64 +72,62 @@ app.get("/", (req, res) => {
   res.send("Server is running!");
 });
 
-app.post("/api/register", async (req, res) => {
+// app.post("/api/register", async (req, res) => {
 
 
-  try {
-    const results = req.body;
+//   try {
+//     const results = req.body;
 
-    const sql = "insert into user(username, email, phone) values (?,?,?)"
-    const sql2 = "insert into car(license, user) values (?,?)"
+//     const sql = "insert into user(username, email, phone) values (?,?,?)"
+//     const sql2 = "insert into car(license, user) values (?,?)"
 
-    db.query(sql, [results.username, results.email, results.phone], (err, result1) => {
-      if (err) {
-        return res.status(500).json({ error: err })
-      }
+//     db.query(sql, [results.username, results.email, results.phone], (err, result1) => {
+//       if (err) {
+//         return res.status(500).json({ error: err })
+//       }
 
-      const userId = result1.insertId;
+//       const userId = result1.insertId;
 
-      db.query(sql2, [results.license, userId], (err, result2) => {
-        if (err) {
-          return res.status(500).json({ error: err })
-        }
+//       db.query(sql2, [results.license, userId], (err, result2) => {
+//         if (err) {
+//           return res.status(500).json({ error: err })
+//         }
 
-        res.json({
-          status: "ok",
-          userId: userId,
-          license: results.license
-        });
-      })
-    });
+//         res.json({
+//           status: "ok",
+//           userId: userId,
+//           license: results.license
+//         });
+//       })
+//     });
 
-  } catch (err) {
-    console.log(err);
-    res.status(500).json({ error: "Server error" });
-  }
-});
-
-const amount_car = [];
-
+//   } catch (err) {
+//     console.log(err);
+//     res.status(500).json({ error: "Server error" });
+//   }
+// });
 app.post("/api/dataPy", async (req, res) => {
-
   const pys = req.body;
-  console.log("Received string:", req.body);
-
+  console.log("Received plate:", req.body);
 
   try {
-    const results = await getCarByLicense(pys);
-    if (results.length > 0) {
-      if (!(amount_car.includes(pys))) {
-        amount_car.push(pys);
+    if (pys && pys.trim().length > 0) {
+      const results = await getCarByLicense(pys.trim());
+
+      if (results.length > 0) {
+        console.log("License found in DB:", results[0].license);
+        global.latestCarData = { license: results[0].license, found: true };
+        return res.json({ status: "ok", value: results });
       }
-      console.log(results);
-      global.latestCarData = results;
-      return res.json({ status: "ok", value: results });
-    } else {
-      global.latestCarData = [];
-      return res.json({ status: "ok", value: [] });
     }
+
+    console.log("License not found or empty input");
+    global.latestCarData = { found: false }; // ✨ ส่งชัดเจนเมื่อไม่เจอทะเบียน
+    return res.json({ status: "ok", value: null });
+
   } catch (err) {
     console.error("DB error:", err);
+    global.latestCarData = { found: false };
     return res.status(500).json({ status: "error", message: "Database error" });
   }
 });
@@ -138,7 +136,7 @@ app.get("/arduino/data", (req, res) => {
   if (global.latestCarData) {
     res.json(global.latestCarData);
   } else {
-    res.json([]);
+    res.json({ found: false });
   }
 });
 
