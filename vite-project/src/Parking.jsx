@@ -29,8 +29,8 @@ function Parking() {
   const fetchData = async () => {
     try {
       const response = await axios.get(BACKEND_URL);
-      setSlotData(response.data.slot[0]);
-      console.log("Fetched slot data:", response.data.slot[0]);
+      setSlotData(response.data.parkingSlots[0]);
+      console.log("Fetched slot data:", response.data.parkingSlots[0]);
     } catch (error) {
       console.error("Error fetching data:", error);
     }

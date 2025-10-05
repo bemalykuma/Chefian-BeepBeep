@@ -1,151 +1,147 @@
-// #include <ArduinoJson.h>
+#include <ArduinoJson.h>
+#include <WiFiS3.h>
+#include <ArduinoHttpClient.h>
+#include <Servo.h>
 
-// #include <WiFiS3.h>
-// #include <ArduinoHttpClient.h>
+// WiFi settings
+const char* ssid = "OUPAPORN";
+const char* password = "0814035065";
+const char serverAddress[] = "192.168.1.33";
+const int port = 5000;
 
-// const char *ssid = "...";
-// const char *password = "...";
-// int status = WL_IDLE_STATUS;
+WiFiClient wifi;
+HttpClient client = HttpClient(wifi, serverAddress, port);
 
-// const char serverAddress[] = "...";
-// const int port = 5000;
+// Servo
+Servo myServo;
+const int servoPin = 9;
 
-// WiFiClient wifi;
-// HttpClient client = HttpClient(wifi, serverAddress, port);
+// HC-SR04 #1 (ตรวจรถออก)
+const int trigPin1 = 7;
+const int echoPin1 = 6;
 
-// const int trigPins[6] = {2, 4, 6, 8, 10, 12};
-// const int echoPins[6] = {3, 5, 7, 9, 11, 13};
+// HC-SR04 #2 (ตรวจรถเข้าจอด)
+const int trigPin2 = 3;
+const int echoPin2 = 2;
 
-// int slots[6];
+// Variables
+int status = WL_IDLE_STATUS;
+bool servoOpen = false;
+bool carParked = false;
 
-// const int thresholdCM = 20;
+void setup() {
+  Serial.begin(115200);
 
-// void setup()
-// {
+  myServo.attach(servoPin);
+  myServo.write(0); // Servo ปิดตอนเริ่มต้น
 
-//     Serial.begin(115200);
-//     while (!Serial)
-//         ;
+  pinMode(trigPin1, OUTPUT);
+  pinMode(echoPin1, INPUT);
+  pinMode(trigPin2, OUTPUT);
+  pinMode(echoPin2, INPUT);
 
-//     while (status != WL_CONNECTED)
-//     {
-//         Serial.print("Attempting to connect to SSID: ");
-//         Serial.println(ssid);
-//         status = WiFi.begin(ssid, password);
-//         delay(5000);
-//     }
+  while (status != WL_CONNECTED) {
+    Serial.print("Connecting to WiFi: ");
+    Serial.println(ssid);
+    status = WiFi.begin(ssid, password);
+    delay(5000);
+  }
 
-//     Serial.println("\nConnected to Wi-Fi");
-//     Serial.print("IP Address: ");
-//     Serial.println(WiFi.localIP());
+  Serial.println("\nConnected to Wi-Fi");
+  Serial.print("IP Address: ");
+  Serial.println(WiFi.localIP());
+}
 
-//     for (int i = 0; i < 6; i++)
-//     {
-//         pinMode(trigPins[i], OUTPUT);
-//         pinMode(echoPins[i], INPUT);
-//     }
-// }
+// ฟังก์ชันวัดระยะ (ใช้ได้ทั้งสองเซนเซอร์)
+long measureDistance(int trigPin, int echoPin) {
+  digitalWrite(trigPin, LOW);
+  delayMicroseconds(2);
+  digitalWrite(trigPin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trigPin, LOW);
 
-// void getLicense()
-// {
+  long duration = pulseIn(echoPin, HIGH);
+  long distance = duration * 0.034 / 2; // cm
+  return distance;
+}
 
-//     client.get("/arduino/data");
-//     int statusCode = client.responseStatusCode();
-//     String response = client.responseBody();
+// ฟังก์ชันส่งข้อมูลที่จอดไปยัง Node.js
+void updateCarSlot(int slotNumber, int value) {
+  StaticJsonDocument<100> doc;
+  doc["slot"] = "slot" + String(slotNumber);
+  doc["value"] = value;
 
-//     Serial.print("Status code: ");
-//     Serial.println(statusCode);
-//     Serial.print("Response: ");
-//     Serial.println(response);
+  String jsonData;
+  serializeJson(doc, jsonData);
 
-//     if (statusCode == 200)
-//     {
+  client.beginRequest();
+  client.post("/api/carSlot");
+  client.sendHeader("Content-Type", "application/json");
+  client.sendHeader("Content-Length", jsonData.length());
+  client.beginBody();
+  client.print(jsonData);
+  client.endRequest();
 
-//         StaticJsonDocument<200> doc;
-//         DeserializationError error = deserializeJson(doc, response);
+  int statusCode = client.responseStatusCode();
+  String response = client.responseBody();
+  Serial.print("Update slot response: ");
+  Serial.println(response);
+}
 
-//         if (!error)
-//         {
-//             const char *license = doc[0]["license"];
-//             Serial.print("license ");
-//             Serial.println(license);
-//         }
-//         else
-//         {
-//             Serial.print("JSON parse error: ");
-//             Serial.println(error.c_str());
-//         }
-//     }
+void loop() {
+  // อ่านค่าจากเซนเซอร์ตัวแรก (หน้าประตู)
+  client.get("/arduino/data");
+  int statusCode = client.responseStatusCode();
+  String response = client.responseBody();
 
-//     delay(1000);
-// }
+  if (statusCode == 200) {
+    StaticJsonDocument<200> doc;
+    DeserializationError error = deserializeJson(doc, response);
 
-// long readDistanceCM(int trigPin, int echoPin)
-// {
-//     digitalWrite(trigPin, LOW);
-//     delayMicroseconds(2);
-//     digitalWrite(trigPin, HIGH);
-//     delayMicroseconds(10);
-//     digitalWrite(trigPin, LOW);
+    if (!error) {
+      bool found = doc["found"];
+      if (found && !servoOpen) {
+        myServo.write(90); // เปิด Servo
+        servoOpen = true;
+        Serial.println("Servo opened");
+      }
+    }
+  }
 
-//     long duration = pulseIn(echoPin, HIGH, 30000);
-//     long distance = duration * 0.034 / 2;
+  // เช็คว่ารถออกไปแล้ว (ตัวแรก)
+  if (servoOpen) {
+    long distance1 = measureDistance(trigPin1, echoPin1);
+    if (distance1 > 6) {
+      Serial.println("Car left. Closing servo in 3 sec...");
+      delay(3000);
+      myServo.write(0);
+      servoOpen = false;
+      Serial.println("Servo closed");
+    }
+  }
 
-//     return distance;
-// }
 
-// void postSlotParking()
-// {
+  long distance2 = measureDistance(trigPin2, echoPin2);
+  Serial.print("Parking distance: ");
+  if (distance2 < 0) {
+    Serial.println("timeout");
+  } else {
+    Serial.println(distance2);
+  }
 
-//     for (int i = 0; i < 6; i++)
-//     {
-//         long distance = readDistanceCM(trigPins[i], echoPins[i]);
-//         slots[i] = (distance > 0 && distance <= thresholdCM) ? 1 : 0;
 
-//         Serial.print("Sensor ");
-//         Serial.print(i + 1);
-//         Serial.print(": ");
-//         Serial.print(distance);
-//         Serial.print(" cm -> slot");
-//         Serial.print(i + 1);
-//         Serial.print(" = ");
-//         Serial.println(slots[i]);
-//     }
+  if (distance2 < 5 && !carParked) {
+    Serial.println("Car detected in parking slot!");
+    updateCarSlot(1, 1);
+    carParked = true;
+  }
 
-//     String postData = "{";
-//     for (int i = 0; i < 6; i++)
-//     {
-//         postData += "\"slot" + String(i + 1) + "\":" + String(slots[i]);
-//         if (i < 5)
-//             postData += ",";
-//     }
-//     postData += "}";
 
-//     Serial.println("Sending: " + postData);
+  if (distance2 > 6 && carParked) {
+    Serial.println("Car left parking slot!");
+    updateCarSlot(1, 0); 
+    carParked = false;
+  }
 
-//     client.beginRequest();
-//     client.post("/data");
-//     client.sendHeader("Content-Type", "application/json");
-//     client.sendHeader("Content-Length", postData.length());
-//     client.beginBody();
-//     client.print(postData);
-//     client.endRequest();
-
-//     int statusCode = client.responseStatusCode();
-//     String response = client.responseBody();
-
-//     Serial.print("Status code: ");
-//     Serial.println(statusCode);
-//     Serial.print("Response: ");
-//     Serial.println(response);
-
-//     delay(5000);
-// }
-
-// void loop()
-// {
-//     Serial.println("\nMaking GET request...");
-
-//     getLicense();
-//     postSlotParking();
-// }
+  delay(1000);
+}

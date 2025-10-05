@@ -14,7 +14,7 @@ app.use(express.text({ type: "text/plain", defaultCharset: "utf-8" }));
 const db = mysql.createConnection({
   host: "localhost",
   user: "root",
-  password: "Pitch239@",
+  password: "1234",
   database: "sys",
 });
 
@@ -114,40 +114,47 @@ const sightParking = [];
 
 app.post("/api/dataPy", async (req, res) => {
   const pys = req.body;
-  console.log("Received string:", req.body);
-
-
+  console.log("Received plate:", req.body);
 
   try {
-    const results = await getCarByLicense(pys);
-    if (results.length > 0) {
+    // ตรวจว่ามีข้อมูลและไม่ใช่ช่องว่าง
+    const plate = typeof pys === "string" ? pys.trim() : "";
+    if (plate.length > 0) {
+      const results = await getCarByLicense(plate);
 
-      const now = new Date();
-      const resultsWithTime = results.map(car => ({
-        ...car,
-        datetimeLocal: now.toLocaleString(),
-      }));
+      if (results.length > 0) {
+        console.log("License found in DB:", results[0].license);
 
-      const exists = sightParking.some(
-        slot => slot.some(car => car.id_car === results[0].id_car)
-      );
+        // สร้างเวลาปัจจุบันและเพิ่มลง sightParking
+        const now = new Date();
+        const resultsWithTime = results.map(car => ({
+          ...car,
+          datetimeLocal: now.toLocaleString(),
+        }));
 
-      if (!exists) {
-        sightParking.push(resultsWithTime);
+        const exists = sightParking.some(
+          slot => slot.some(car => car.id_car === results[0].id_car)
+        );
+
+        if (!exists) sightParking.push(resultsWithTime);
+        if (!amount_car.includes(plate)) amount_car.push(plate);
+
+        // อัปเดตข้อมูลล่าสุดให้ Arduino
+        global.latestCarData = { license: results[0].license, found: true };
+
+        console.log("sightParking:", sightParking);
+        return res.json({ status: "ok", value: results });
       }
-      if (!amount_car.includes(pys)) {
-        amount_car.push(pys);
-      }
-      console.log(results);
-      console.log(sightParking);
-      global.latestCarData = results;
-      return res.json({ status: "ok", value: results });
-    } else {
-      global.latestCarData = [];
-      return res.json({ status: "ok", value: [] });
     }
+
+    // ไม่พบหรือป้ายว่าง
+    console.log("License not found or empty input");
+    global.latestCarData = { found: false };
+    return res.json({ status: "ok", value: null });
+
   } catch (err) {
     console.error("DB error:", err);
+    global.latestCarData = { found: false };
     return res.status(500).json({ status: "error", message: "Database error" });
   }
 });
@@ -156,7 +163,7 @@ app.get("/arduino/data", (req, res) => {
   if (global.latestCarData) {
     res.json(global.latestCarData);
   } else {
-    res.json([]);
+    res.json({ found: false });
   }
 });
 
@@ -168,24 +175,28 @@ app.get("/api/sightParking", (req, res) => {
   res.json({ sightParking });
 });
 
-const slot = [
+const parkingSlots = [
   {
-    slot1: 1,
-    slot2: 0,
-    slot3: 1,
-    slot4: 1,
-    slot5: 1,
-    slot6: 0,
+    slot1: 0
   }
 ];
-
 app.post("/api/carSlot", (req, res) => {
-  const results = req.body;
-  console.log(results)
-})
+  const { slot, value } = req.body; // ข้อมูลที่ Arduino ส่งมา เช่น { slot: "slot1", value: 1 }
+
+  console.log("Received car slot update:", req.body);
+
+  if (slot && typeof value === "number") {
+    // ✅ อัปเดตใน array หลัก
+    parkingSlots[0][slot] = value;
+    console.log(`Updated ${slot} -> ${value}`);
+    return res.json({ success: true, updated: { [slot]: value } });
+  }
+
+  res.status(400).json({ success: false, message: "Invalid data" });
+});
 
 app.get("/api/carSlot", (req, res) => {
-  res.json({ slot });
+  res.json({ parkingSlots });
 });
 
 app.get("/api/reserve", async (req, res) => {
