@@ -48,13 +48,14 @@ function Parking() {
       <div className="container bg-blue p-5 h-100 w-md-50">
         <div className="">
           <h2 className="text-light">Slot Available</h2>
-          {Object.entries(slotData).map(([key, val]) => {
-            return (
+          {Object.entries(slotData).map(
+            ([key, val]) =>
               val === 0 && (
-                <h4 className="text-light fw-normal" key={key}>{key.replace(/slot(\d+)/, 'slot $1')}</h4>
+                <h4 className="text-light fw-normal" key={key}>
+                  {key.replace(/slot(\d+)/, "slot $1")}
+                </h4>
               )
-            );
-          })}
+          )}
         </div>
 
         <div className="row g-5">
@@ -110,7 +111,7 @@ function Parking() {
             </div>
             <div className="w-50 px-3 border-end border-top border-3 border-white d-flex justify-content-end">
               <span className="my-5"></span>
-              {slotData.slot5=== 1 && (
+              {slotData.slot5 === 1 && (
                 <img
                   src={getRandomImage()}
                   className="img-size-fix svg_right"
