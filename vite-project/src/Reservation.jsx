@@ -1,21 +1,19 @@
-import { useState, useEffect } from "react";
-
+import { useState, useEffect, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faInfo } from "@fortawesome/free-solid-svg-icons";
-
 import Dropdown from "react-bootstrap/Dropdown";
-
 import axios from "axios";
 
 function Reservation() {
   const [options, setOptions] = useState([]);
   const [selected, setSelected] = useState(null);
-
   const [slotOp, setSlotOp] = useState([]);
   const [selectedOp, setSelectedOp] = useState(null);
 
+  const socketRef = useRef(null); // 
   const BACKEND_URL = "http://localhost:5000/api/reserve";
 
+  // โหลดข้อมูลรถและช่องจอด
   const fetchData = async () => {
     try {
       const response = await axios.get(BACKEND_URL);
@@ -26,62 +24,75 @@ function Reservation() {
 
       console.log("Fetched data:", response.data.results);
     } catch (error) {
-      console.error(response.data.value);
       console.error("Error fetching data:", error);
     }
   };
 
   useEffect(() => {
     fetchData();
-    const intervalId = setInterval(fetchData, 10000);
 
-    return () => clearInterval(intervalId);
-  }, [selected, selectedOp]);
+
+    const socket = new WebSocket("ws://localhost:5000");
+    socketRef.current = socket;
+
+    socket.onopen = () => console.log(" Reservation WebSocket connected");
+    socket.onclose = () => console.log(" Reservation WebSocket disconnected");
+    socket.onerror = (err) => console.error(" WebSocket error:", err);
+
+
+    const heartbeat = setInterval(() => {
+      if (socket.readyState === WebSocket.OPEN) {
+        socket.send(JSON.stringify({ ping: true }));
+      }
+    }, 30000);
+
+    return () => {
+      clearInterval(heartbeat);
+      socket.close();
+    };
+  }, []);
 
   const handleSubmit = async (event) => {
-    event.preventDefault();
+  event.preventDefault();
+  if (!selected || !selectedOp) return;
 
-    if (!selected || !selectedOp) {
-      return;
+  try {
+    const res = await axios.post(BACKEND_URL, {
+      id_car: selected.id_car,
+      slot: selectedOp,
+    });
+
+    console.log("Reservation response:", res.data);
+
+
+    const id = parseInt(selectedOp.replace("slot", ""), 10);
+    if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
+      socketRef.current.send(
+        JSON.stringify({ id, state: 1, distance: 0, from: "reservation" })
+      );
+      console.log("📡 Sent WebSocket broadcast:", { id, state: 1 });
     }
 
-    try {
-      const res = await axios.post(BACKEND_URL, {
-        id_car: selected.id_car,
-        slot: selectedOp,
-      });
+    setSelected({ ...selected, status: "reserved" });
+    setSelectedOp(selectedOp); // แค่เก็บชื่อช่องไว้เฉย ๆ
 
-      if (res.data.error) {
-        setSelected({ ...selected, error: res.data.error });
-      } else {
-        setSelected({ ...selected, status: "reserved" });
-        setSelectedOp({ ...selectedOp, status: "reserved" });
-      }
+    setTimeout(() => {
+      setSelected(null);
+      setSelectedOp(null);
+    }, 3000);
+  } catch (err) {
+    console.error(err);
+  }
+};
 
-      setTimeout(() => {
-        setSelected(null);
-        setSelectedOp(null);
-      }, 5000);
-
-      console.log(res.data);
-
-    } catch (err) {
-      console.error(err);
-    }
-  };
 
   return (
     <>
       <div className="container mt-5 mx-auto">
         <div className="d-flex gap-3 justify-content-center align-items-center">
-          <FontAwesomeIcon
-            className="text-center mb-3"
-            icon={faInfo}
-            size="2x"
-          />
+          <FontAwesomeIcon className="text-center mb-3" icon={faInfo} size="2x" />
           <p className="fst-italic">
-            Reservation can reserve within 1 hours and must be already register,
-            if idle will skip.
+            Reservation can reserve within 1 hour and must be already registered.
           </p>
         </div>
 
@@ -95,7 +106,6 @@ function Reservation() {
                 <Dropdown.Toggle variant="dark" id="dropdown-basic">
                   Select Username and Car
                 </Dropdown.Toggle>
-
                 <Dropdown.Menu>
                   {options.length > 0 ? (
                     options.map((spt) => (
@@ -111,6 +121,7 @@ function Reservation() {
                   )}
                 </Dropdown.Menu>
               </Dropdown>
+
               <Dropdown className="mt-3">
                 <Dropdown.Toggle variant="dark" id="dropdown-basic">
                   Select Slot Parking
@@ -120,10 +131,7 @@ function Reservation() {
                     Object.entries(slotObj)
                       .filter(([_, value]) => value === 0)
                       .map(([key]) => (
-                        <Dropdown.Item
-                          key={key}
-                          onClick={() => setSelectedOp(key)}
-                        >
+                        <Dropdown.Item key={key} onClick={() => setSelectedOp(key)}>
                           {key}
                         </Dropdown.Item>
                       ))
@@ -131,42 +139,18 @@ function Reservation() {
                 </Dropdown.Menu>
               </Dropdown>
 
-              {selected ? (
-                <div className="mt-3">
-                  {selected.status === "reserved" ? (
-                    <p className="fs-5 fw-semibold">Reserved ✔</p>
-                  ) : (
-                    <div className="d-flex align-items-end gap-3">
-                      <p className="fs-5 fw-semibold">Selected :</p>
-                      <p>
-                        {selected.username} {selected.license}
-                      </p>
-                    </div>
-                  )}
-                </div>
-              ) : (
-                <div className="mt-3">
-                  <p className="fs-5 fw-semibold">None Selected</p>
-                </div>
-              )}
-              {selectedOp ? (
-                <div className="">
-                  {selectedOp.status === "reserved" ? (
-                    <p className="fs-5 fw-semibold"></p>
-                  ) : (
-                    <div className="d-flex align-items-end gap-3">
-                      <p className="fs-5 fw-semibold">Slot :</p>
-                      <p>{selectedOp}</p>
-                    </div>
-                  )}
-                </div>
-              ) : (
-                <div className="mt-3">
-                  <p className="fs-5 fw-semibold">Slot : None Selected</p>
-                </div>
-              )}
+              <div className="mt-3">
+                <p className="fs-5 fw-semibold">
+                  {selected
+                    ? `Selected: ${selected.username} ${selected.license}`
+                    : "None Selected"}
+                </p>
+                <p className="fs-5 fw-semibold">
+                  Slot: {selectedOp || "None Selected"}
+                </p>
+              </div>
 
-              <button type="submit" className="btn btn-dark">
+              <button type="submit" className="btn btn-dark mt-3">
                 Submit
               </button>
             </form>
@@ -176,4 +160,5 @@ function Reservation() {
     </>
   );
 }
+
 export default Reservation;

@@ -1,21 +1,32 @@
+
 const express = require("express");
 const cors = require("cors");
 const mysql = require("mysql2");
 
 const cron = require("node-cron");
+const http = require("http");
+const WebSocket = require("ws");
 
 const app = express();
 const PORT = 5000;
+
+const server = http.createServer(app);
+const wss = new WebSocket.Server({ server });
+
+const clients = new Set();
+
+
+
 
 app.use(cors());
 app.use(express.json());
 app.use(express.text({ type: "text/plain", defaultCharset: "utf-8" }));
 
 const db = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "1234",
-  database: "sys",
+  host: 'localhost',
+  user: 'root',
+  password: '1234',
+  database: 'sys'
 });
 
 db.connect((err) => {
@@ -72,6 +83,7 @@ app.get("/", (req, res) => {
   res.send("Server is running!");
 });
 
+
 app.post("/api/register", async (req, res) => {
   try {
     const results = req.body;
@@ -112,60 +124,81 @@ const amount_car = [];
 const sightParking = [];
 
 
+let arduinoData2 = 0; // ตัวแปรเก็บค่าที่จะให้ Arduino อ่าน
+
 app.post("/api/dataPy", async (req, res) => {
   const pys = req.body;
-  console.log("Received plate:", req.body);
+  console.log("Received string:", req.body);
 
   try {
-    // ตรวจว่ามีข้อมูลและไม่ใช่ช่องว่าง
-    const plate = typeof pys === "string" ? pys.trim() : "";
-    if (plate.length > 0) {
-      const results = await getCarByLicense(plate);
+    const results = await getCarByLicense(pys);
 
-      if (results.length > 0) {
-        console.log("License found in DB:", results[0].license);
+    if (results.length > 0) {
+      const now = new Date();
+      const resultsWithTime = results.map(car => ({
+        ...car,
+        datetimeLocal: now.toLocaleString(),
+      }));
 
-        // สร้างเวลาปัจจุบันและเพิ่มลง sightParking
-        const now = new Date();
-        const resultsWithTime = results.map(car => ({
-          ...car,
-          datetimeLocal: now.toLocaleString(),
-        }));
+      const exists = sightParking.some(
+        slot => slot.some(car => car.id_car === results[0].id_car)
+      );
 
-        const exists = sightParking.some(
-          slot => slot.some(car => car.id_car === results[0].id_car)
-        );
-
-        if (!exists) sightParking.push(resultsWithTime);
-        if (!amount_car.includes(plate)) amount_car.push(plate);
-
-        // อัปเดตข้อมูลล่าสุดให้ Arduino
-        global.latestCarData = { license: results[0].license, found: true };
-
-        console.log("sightParking:", sightParking);
-        return res.json({ status: "ok", value: results });
+      if (!exists) {
+        sightParking.push(resultsWithTime);
       }
+
+      if (!amount_car.includes(pys)) {
+        amount_car.push(pys);
+      }
+
+      console.log(results);
+      console.log(sightParking);
+
+      global.latestCarData = results;
+
+      arduinoData2 = 1;
+
+      return res.json({ status: "ok", value: results });
+    } else {
+      global.latestCarData = [];
+
+      arduinoData2 = 0;
+
+      return res.json({ status: "ok", value: [] });
     }
-
-    // ไม่พบหรือป้ายว่าง
-    console.log("License not found or empty input");
-    global.latestCarData = { found: false };
-    return res.json({ status: "ok", value: null });
-
   } catch (err) {
     console.error("DB error:", err);
-    global.latestCarData = { found: false };
-    return res.status(500).json({ status: "error", message: "Database error" });
+    return res.status(500).json({ status: "error", message: err.message });
   }
 });
 
+app.get("/arduino/data2", (req, res) => {
+  res.json({ value: arduinoData2 });
+  console.log("Arduino requested data2:", arduinoData2);
+
+  // รีเซ็ตกลับเป็น 0 เพื่อไม่ให้เปิดซ้ำ
+  if (arduinoData2 === 1) {
+    setTimeout(() => {
+      arduinoData2 = 0;
+      console.log("arduinoData2 reset to 0");
+    }, 1000); // ดีเลย์ 1 วินาที (กัน Arduino อ่านซ้ำทันที)
+  }
+});
+
+
 app.get("/arduino/data", (req, res) => {
+  // console.log("global :");
+
+  // console.log(global.latestCarData)
   if (global.latestCarData) {
     res.json(global.latestCarData);
   } else {
-    res.json({ found: false });
+    res.json([]);
   }
 });
+
+
 
 app.get("/api/amount_car", (req, res) => {
   res.json({ amount_car });
@@ -175,28 +208,60 @@ app.get("/api/sightParking", (req, res) => {
   res.json({ sightParking });
 });
 
-const parkingSlots = [
+const slot = [
   {
-    slot1: 0
+    slot1: 0,
+    slot2: 0,
+    slot3: 0,
+    slot4: 0,
+    slot5: 0,
+    slot6: 0,
   }
 ];
+
 app.post("/api/carSlot", (req, res) => {
-  const { slot, value } = req.body; // ข้อมูลที่ Arduino ส่งมา เช่น { slot: "slot1", value: 1 }
+  try {
+    const body = req.body;
+    console.log("📡 Data from client:", body);
 
-  console.log("Received car slot update:", req.body);
+    // 🧩 กรณีที่ body เป็น {"slot":[{"slot1":0,"slot2":1,...}]}
+    if (body.slot && Array.isArray(body.slot)) {
+      const slots = body.slot[0];
 
-  if (slot && typeof value === "number") {
-    // ✅ อัปเดตใน array หลัก
-    parkingSlots[0][slot] = value;
-    console.log(`Updated ${slot} -> ${value}`);
-    return res.json({ success: true, updated: { [slot]: value } });
+      // loop ทุกช่อง
+      Object.entries(slots).forEach(([key, value]) => {
+        const id = parseInt(key.replace("slot", ""));
+        slot[0][key] = value;
+
+        // ✅ ส่งข้อมูลออกไปทาง WebSocket
+        broadcast({ id, state: value, distance: 0 });
+      });
+
+      return res.json({ status: "ok", message: "Broadcasted all slots" });
+    }
+
+    // 🧩 กรณีที่ body เป็น {"id":1,"state":0,"distance":10}
+    if (body.id !== undefined && body.state !== undefined) {
+      const { id, state, distance } = body;
+      slot[0][`slot${id}`] = state;
+
+      // ✅ broadcast เฉพาะช่องนั้น
+      broadcast({ id, state, distance });
+      return res.json({ status: "ok", message: "Broadcasted single slot" });
+    }
+
+    res.status(400).json({ status: "error", message: "Invalid format" });
+  } catch (err) {
+    console.error("Error handling /api/carSlot:", err);
+    res.status(500).json({ error: "Internal server error" });
   }
-
-  res.status(400).json({ success: false, message: "Invalid data" });
 });
 
+
+
+
 app.get("/api/carSlot", (req, res) => {
-  res.json({ parkingSlots });
+  res.json({ slot });
 });
 
 app.get("/api/reserve", async (req, res) => {
@@ -216,34 +281,49 @@ app.get("/api/reserve", async (req, res) => {
 
 app.post("/api/reserve", (req, res) => {
   const results = req.body;
-  console.log(results);
+  console.log("📩 Reservation request:", results);
 
+  // ✅ ตรวจว่ามีค่า slot ส่งมาหรือไม่
+  if (!results.slot) {
+    return res.status(400).json({ error: "Missing slot" });
+  }
+
+  // ✅ อัปเดตค่า slot ในตัวแปร memory (เช่น slot2 = 1)
   slot[0][results.slot] = 1;
-  console.log(slot);
+  console.log("🧭 Updated slot array:", slot);
 
-  const sql2 = "SELECT * FROM reservation WHERE id_car = ?";
+  // ✅ แปลงชื่อช่อง เช่น "slot2" → 2
+  const id = parseInt(results.slot.replace("slot", ""), 10);
 
-  db.query(sql2, [results.id_car], (err, result) => {
+  const sqlCheck = "SELECT * FROM reservation WHERE id_car = ?";
+  db.query(sqlCheck, [results.id_car], (err, existing) => {
     if (err) {
-      console.error(err);
+      console.error("❌ DB select error:", err);
       return res.status(500).json({ error: "DB error" });
     }
 
-    if (result.length === 0) {
-      const sql = "INSERT INTO reservation(id_car, slot) VALUES (?, ?)";
-      db.query(sql, [results.id_car, results.slot], (err, result2) => {
-        if (err) {
-          console.error(err);
+    // ถ้ายังไม่มีการจอง
+    if (existing.length === 0) {
+      const sqlInsert = "INSERT INTO reservation(id_car, slot) VALUES (?, ?)";
+      db.query(sqlInsert, [results.id_car, results.slot], (err2, result2) => {
+        if (err2) {
+          console.error("❌ DB insert error:", err2);
           return res.status(500).json({ error: "DB error" });
         }
-        res.json({ insertId: result2.insertId });
+
+        // ✅ BROADCAST ไปทุก client ที่เชื่อม WebSocket
+        console.log(`📡 Broadcasting slot ${id} -> state=1`);
+        broadcast({ id, state: 1, distance: 0 });
+
+        return res.json({ status: "ok", insertId: result2.insertId });
       });
     } else {
-      console.log("Already Reserved");
+      console.log("⚠️ Already Reserved");
       res.json({ error: "Already Reserved" });
     }
   });
 });
+
 
 cron.schedule("*/40 * * * * *", () => {
 
@@ -263,6 +343,9 @@ cron.schedule("*/40 * * * * *", () => {
 
         slot[0][row.slot] = 0;
 
+        const id = parseInt(row.slot.replace("slot", ""), 10);
+        broadcast({ id, state: 0, distance: 0 });
+        console.log(`📡 Broadcasted slot ${id} -> state=0`);
 
         const del = "DELETE FROM reservation WHERE id_car = ?";
         db.query(del, [row.id_car], (err2, res2) => {
@@ -273,15 +356,51 @@ cron.schedule("*/40 * * * * *", () => {
           console.log(`Deleted id_car: ${row.id_car}, affected: ${res2.affectedRows}`);
 
         });
-      }else{
+      } else {
         console.log("not delete");
       }
     });
   });
 });
 
+wss.on("connection", (ws) => {
+  console.log("🔗 WebSocket client connected");
+  clients.add(ws);
 
 
-app.listen(PORT, "0.0.0.0", () => {
+  ws.on("message", (msg) => {
+    try {
+      const data = JSON.parse(msg);
+      if (data.ping) return;
+      console.log("📩 WebSocket message:", data);
+
+      // ✅ ถ้ามาจากหน้า Reservation ให้ broadcast ไปหน้า Parking
+      if (data.from === "reservation") {
+        broadcast({ id: data.id, state: data.state, distance: data.distance });
+        console.log(`📡 Broadcasted slot ${data.id} -> state=${data.state}`);
+      }
+    } catch (e) {
+      console.error("Error parsing WebSocket msg:", e);
+    }
+  });
+
+  ws.on("close", () => {
+    console.log("❌ Client disconnected");
+    clients.delete(ws);
+  });
+});
+
+function broadcast(data) {
+  const jsonData = JSON.stringify(data);
+  for (const client of clients) {
+    if (client.readyState === WebSocket.OPEN) {
+      client.send(jsonData);
+    }
+  }
+}
+
+
+server.listen(PORT, "0.0.0.0", () => {
   console.log(`🚀 Server is running on http://localhost:${PORT}`);
 });
+
