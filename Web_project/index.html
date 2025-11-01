@@ -12,7 +12,7 @@
         <div class="navbar">
             <div class="logo">
                 <img class="icon" src="images/logo_icon.png" alt="">
-                <p>Chefian Beep Beep</p>
+                <a style="text-decoration: none; color: #000;" href="#HOME">Chefian Beep Beep</a>
             </div>
             
             <div class="hamburger" onclick="toggleMenu()">
@@ -27,30 +27,51 @@
                 <a href="#source">Source Code</a>
                 <a href="#video">Video</a>
                 <a href="#aboutus">About Us</a>
+                <a href="https://drive.google.com/drive/folders/1e_FzrNQVKajnIAMAk_B2tNfzFBrcT_Pi?usp=sharing" class="poster" target="_blank">Poster</a>
             </div>
         </div>
     </nav>
-<!-- 
-        <section id="HOME">
-        <div style="width: 100%; background-color: #ff2aad; height: 800px; margin-top: 0px; color: black;">
-            <h1 style="color: black;">CHEFIAN BEEP BEEP</h1>
-            <p>Details about the source will go here.</p>
+
+    <section id="HOME">
+        <div style="width: 100%; background-color: #ff2aad; height: 900px; margin-top: 0px; display: flex; flex-direction: column; align-items: center;">
+            <h1 style="color: rgb(255, 249, 253); margin-top: 100px;">Overview Project Images</h1>
+            <!-- Carousel Wrapper -->
+            <div class="carousel-wrapper">
+                <div class="carousel-container" id="carousel">
+                    <img src="images/test1.png" alt="Image 1">
+                    <img src="images/test2.png" alt="Image 2">
+                    <img src="images/test3.png" alt="Image 3">
+                    <img src="images/Web1.png" alt="Image 4">
+                    <img src="images/Web2.png" alt="Image 5">
+                    <img src="images/Web3.png" alt="Image 6">
+                    <img src="images/Web4.png" alt="Image 7">
+                </div>
+    
+                <!-- ปุ่มเลื่อน -->
+                <button class="carousel-btn prev" onclick="moveCarousel(-1)">&#10094;</button>
+                <button class="carousel-btn next" onclick="moveCarousel(1)">&#10095;</button>
+            </div>
         </div>
-    </section> -->
+    </section>
 
     <section id="project">
         <div class="content">
             <h1>Project</h1>
             <div class="project-card">
-                <div class="card">
-                    <img src="images/project.png" alt="Project Image">
-                </div>
                 <div class="detail">
                     <h2>Abstract</h2>
                     <p>เป็นโปรเจคที่ช่วยทำให้การเข้าถึงที่จอดรถ สะดวก ปลอดภัย และรวดเร็ว ผ่านการตรวจจับป้ายทะเบียนอัตโนมัติ โดยโปรเจคนี้นำ Computer Vision (OpenCV) และ ภาษา Python มาทำงานร่วมกับการเชื่อมต่อกับอุปกรณ์ IoT/Arduino เพื่อควบคุมการเปิด-ปิดประตูอัตโนมัติ มีการนำ License Plate Recognition (LPR) มาใช้เพื่อการควบคุมการเข้าถึงโดยตรง เพิ่มความสะดวกสบาย โดยที่ผู้ใช้ไม่ต้องใช้รีโมตหรือบัตร RFID แบบเดิม แค่ป้ายทะเบียนรถก็เพียงพอในการยืนยันตัวตน และโปรเจคนี้มีฟังก์ชันในการตรวจสอบจำนวนที่จอดรถที่เหลืออยู่ และแสดงผลผ่านหน้าเว็บไซต์ให้ผู้ใช้สามารถเข้ามาตรวจสอบได้แบบเรียลไทม์ ทำให้ผู้ใช้ตัดสินใจได้ทันทีว่าจะขับรถเข้ามาจอดหรือไม่</p>
                     <h2>Objective</h2>
                     <li>เพื่อแก้ปัญหาการเปิด-ปิดประตูที่ยุ่งยาก</li>
                     <li>เพื่อให้การเข้าถึงที่จอดรถ สะดวก ปลอดภัย และรวดเร็ว</li>
+                    <li>เพื่อวางแผนการจอดรถได้ล่วงหน้า</li>
+                    <li>ช่วยลดปัญหาการแย่งที่จอดรถ</li>
+                    <li>เป็นประโยชน์ต่อผู้ดูแลลานจอดในการบริหารจัดการพื้นที่</li>
+                    <h2>Feature</h2>
+                    <li>ลงทะเบียนป้ายทะเบียนรถผ่านเว็บไซต์</li>
+                    <li>ตรวจสอบจำนวนที่จอดรถที่เหลืออยู่แบบเรียลไทม์</li>
+                    <li>จองที่จอดรถล่วงหน้า</li>
+
                 </div>
             </div>
         </div>
@@ -58,26 +79,20 @@
     <section id="tools">
         <div class="content">
             <h1>Tools</h1>
-            <div class="tools-container">
-                <div class="tool_card">
-                    <p>Arduino R4</p>
-                    <img src="images/arduino.png" alt="">
-                </div>
-                <div class="tool_card">
-                    <p>ESP32-CAM</p>
-                    <img src="images/esp32-cam.png" alt="">
-                </div>
-                <div class="tool_card">
-                    <p>HC-SR04</p>
-                    <img src="images/HC-SR04.png" alt="">
-                </div>
-                <div class="tool_card">
-                    <p>Infrared Sensor</p>
-                    <img src="images/infrared.png" alt="">
-                </div>
-                <div class="tool_card">
-                    <p>Servo Motor</p>
-                    <img src="images/servo.png" alt="">
+            <div class="tools-wrapper">
+                <div class="tools-container">
+                    <div class="tool_card">
+                        <p>Arduino Uno R4</p>
+                        <img src="images/arduino.png" alt="">
+                    </div>
+                    <div class="tool_card">
+                        <p>HC-SR04</p>
+                        <img src="images/HC-SR04.png" alt="">
+                    </div>
+                    <div class="tool_card">
+                        <p>Servo Motor</p>
+                        <img src="images/servo.png" alt="">
+                    </div>
                 </div>
             </div>
         </div>
@@ -85,7 +100,164 @@
     <section id="source">
         <div class="content">
             <h1>Source Code</h1>
-            <p>Details about the source will go here.</p>
+            <div class="src">
+                <pre>
+                    <b>
+
+                        #include <ArduinoJson.h>
+                        #include <WiFiS3.h>
+                        #include <ArduinoHttpClient.h>
+                        #include <Servo.h>
+        
+                        // WiFi settings
+                        const char* ssid = "OUPAPORN";
+                        const char* password = "0814035065";
+                        const char serverAddress[] = "192.168.1.33";
+                        const int port = 5000;
+        
+                        WiFiClient wifi;
+                        HttpClient client = HttpClient(wifi, serverAddress, port);
+        
+                        // Servo
+                        Servo myServo;
+                        const int servoPin = 9;
+        
+                        // HC-SR04 #1 (ตรวจรถออก)
+                        const int trigPin1 = 7;
+                        const int echoPin1 = 6;
+        
+                        // HC-SR04 #2 (ตรวจรถเข้าจอด)
+                        const int trigPin2 = 3;
+                        const int echoPin2 = 2;
+        
+                        // Variables
+                        int status = WL_IDLE_STATUS;
+                        bool servoOpen = false;
+                        bool carParked = false;
+        
+                        void setup() {
+                        Serial.begin(115200);
+        
+                        myServo.attach(servoPin);
+                        myServo.write(0); // Servo ปิดตอนเริ่มต้น
+        
+                        pinMode(trigPin1, OUTPUT);
+                        pinMode(echoPin1, INPUT);
+                        pinMode(trigPin2, OUTPUT);
+                        pinMode(echoPin2, INPUT);
+        
+                        while (status != WL_CONNECTED) {
+                            Serial.print("Connecting to WiFi: ");
+                            Serial.println(ssid);
+                            status = WiFi.begin(ssid, password);
+                            delay(5000);
+                        }
+        
+                        Serial.println("\nConnected to Wi-Fi");
+                        Serial.print("IP Address: ");
+                        Serial.println(WiFi.localIP());
+                        }
+        
+                        // ฟังก์ชันวัดระยะ (ใช้ได้ทั้งสองเซนเซอร์)
+                        long measureDistance(int trigPin, int echoPin) {
+                        digitalWrite(trigPin, LOW);
+                        delayMicroseconds(2);
+                        digitalWrite(trigPin, HIGH);
+                        delayMicroseconds(10);
+                        digitalWrite(trigPin, LOW);
+        
+                        long duration = pulseIn(echoPin, HIGH);
+                        long distance = duration * 0.034 / 2; // cm
+                        return distance;
+                        }
+        
+                        // ฟังก์ชันส่งข้อมูลที่จอดไปยัง Node.js
+                        void updateCarSlot(int slotNumber, int value) {
+                        StaticJsonDocument<100> doc;
+                        doc["slot"] = "slot" + String(slotNumber);
+                        doc["value"] = value;
+        
+                        String jsonData;
+                        serializeJson(doc, jsonData);
+        
+                        client.beginRequest();
+                        client.post("/api/carSlot");
+                        client.sendHeader("Content-Type", "application/json");
+                        client.sendHeader("Content-Length", jsonData.length());
+                        client.beginBody();
+                        client.print(jsonData);
+                        client.endRequest();
+        
+                        int statusCode = client.responseStatusCode();
+                        String response = client.responseBody();
+                        Serial.print("Update slot response: ");
+                        Serial.println(response);
+                        }
+        
+                        void loop() {
+                        // อ่านค่าจากเซนเซอร์ตัวแรก (หน้าประตู)
+                        client.get("/arduino/data");
+                        int statusCode = client.responseStatusCode();
+                        String response = client.responseBody();
+        
+                        if (statusCode == 200) {
+                            StaticJsonDocument<200> doc;
+                            DeserializationError error = deserializeJson(doc, response);
+        
+                            if (!error) {
+                            bool found = doc["found"];
+                            if (found && !servoOpen) {
+                                myServo.write(90); // เปิด Servo
+                                servoOpen = true;
+                                Serial.println("Servo opened");
+                            }
+                            }
+                        }
+        
+                        // เช็คว่ารถออกไปแล้ว (ตัวแรก)
+                        if (servoOpen) {
+                            long distance1 = measureDistance(trigPin1, echoPin1);
+                            if (distance1 > 6) {
+                            Serial.println("Car left. Closing servo in 3 sec...");
+                            delay(3000);
+                            myServo.write(0);
+                            servoOpen = false;
+                            Serial.println("Servo closed");
+                            }
+                        }
+        
+        
+                        long distance2 = measureDistance(trigPin2, echoPin2);
+                        Serial.print("Parking distance: ");
+                        if (distance2 < 0) {
+                            Serial.println("timeout");
+                        } else {
+                            Serial.println(distance2);
+                        }
+        
+        
+                        if (distance2 < 5 && !carParked) {
+                            Serial.println("Car detected in parking slot!");
+                            updateCarSlot(1, 1);
+                            carParked = true;
+                        }
+        
+        
+                        if (distance2 > 6 && carParked) {
+                            Serial.println("Car left parking slot!");
+                            updateCarSlot(1, 0); 
+                            carParked = false;
+                        }
+        
+                        delay(1000);
+                        }
+                    </b>
+                </pre>
+            
+            </div>
+            <a class="git" href="https://github.com/bemalykuma/Chefian-BeepBeep">
+                <p>Go to Github</p>
+            </a>
         </div>
     </section>
     <section id="video">
@@ -125,6 +297,31 @@
             const menu = document.getElementById('menu');
             menu.classList.toggle('show');
         }
+
+        let carousel = document.getElementById('carousel');
+        let images = carousel.getElementsByTagName('img');
+        let index = 0;
+        let total = images.length;
+
+        function showSlide(i) {
+            // คำนวณตำแหน่งเลื่อน
+            let offset = -i * 100; // เพราะ width ของรูป = 100%
+            carousel.style.transform = `translateX(${offset}%)`;
+        }
+
+        // ปุ่มเลื่อน
+        function moveCarousel(direction) {
+            index += direction;
+            if (index < 0) index = total - 1;
+            if (index >= total) index = 0;
+            showSlide(index);
+        }
+
+        // Auto slide ทุก 3 วินาที
+        setInterval(() => {
+            moveCarousel(1);
+        }, 3000);
+
     </script>
-</body>
+        </body>
 </html>
