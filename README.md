@@ -28,6 +28,9 @@
 | <img src="Web_project/images/arduino.png" width="150"> | <img src="Web_project/images/HC-SR04.png" width="150"> | <img src="Web_project/images/servoc.png" width="150"> |
 
 
+## Poster
+<a href = "https://drive.google.com/drive/folders/1e_FzrNQVKajnIAMAk_B2tNfzFBrcT_Pi"><img src="Web_project/images/Poster.png"></a>
+
 ## Source
 - https://www.youtube.com/watch?v=DF7A-Sq3MlU
 - OpenCV with Python https://pypi.org/project/opencv-python/
