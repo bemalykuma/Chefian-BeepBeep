@@ -23,9 +23,9 @@
 | 67070148 | นางสาวเยาวภา ถาวรวิริยะนันท์ | Web | <img src="Web_project/images/bamboo.png" width="150"> |
 
 ## Tools
-<img src="Web_project/images/arduino.png" width="150">
-<img src="Web_project/images/HC-SR04.png" width="150">
-<img src="Web_project/images/servo.png" width="150">
+| Arduino Uno R4 | HC-SR04 | Servo Motor |
+|--|--|--|
+| <img src="Web_project/images/arduino.png" width="150"> | <img src="Web_project/images/HC-SR04.png" width="150"> | <img src="Web_project/images/servo.png" width="150"> |
 
 
 ## Source
