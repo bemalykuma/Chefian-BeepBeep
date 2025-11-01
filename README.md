@@ -28,6 +28,8 @@
 | <img src="Web_project/images/arduino.png" width="150"> | <img src="Web_project/images/HC-SR04.png" width="150"> | <img src="Web_project/images/servoc.png" width="150"> |
 
 
+## Web github.io
+## Demo Video
 ## Poster
 <a href = "https://drive.google.com/drive/folders/1e_FzrNQVKajnIAMAk_B2tNfzFBrcT_Pi"><img src="Web_project/images/Poster.png"></a>
 
