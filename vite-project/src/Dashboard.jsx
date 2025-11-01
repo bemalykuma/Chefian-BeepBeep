@@ -3,6 +3,7 @@ import axios from "axios";
 
 function Dashboard() {
   const [data, setData] = useState([]);
+  const [carSlots, setCarSlots] = useState({});
   const BACKEND_URL = "http://localhost:5000/api/sightParking";
 
   const fetchData = async () => {
@@ -22,6 +23,37 @@ function Dashboard() {
 
     return () => clearInterval(intervalId);
   }, []);
+
+  useEffect(() => {
+
+
+    const socket = new WebSocket("ws://localhost:5000");
+
+    socket.onopen = () => console.log(" WebSocket connected");
+    socket.onclose = () => console.log(" WebSocket disconnected");
+    socket.onerror = (err) => console.error(" WebSocket error:", err);
+
+    socket.onmessage = (event) => {
+      try {
+        const message = JSON.parse(event.data);
+        console.log(" Received from server:", message);
+
+        // อัปเดตข้อมูลช่องจอดรถแบบเรียลไทม์
+        setCarSlots((prev) => ({
+          ...prev,
+          [message.id]: { state: message.state, distance: message.distance },
+        }));
+      } catch (err) {
+        console.error("Error parsing WebSocket message:", err);
+      }
+    };
+
+    return () => socket.close(); 
+  }, []);
+
+  const occupiedCount = Object.values(carSlots).filter(slot => slot.state === 1).length;
+
+
   return (
     <>
       <div className="container-fluid p-4">
@@ -33,7 +65,7 @@ function Dashboard() {
                 <p className="fw-semibold fs-3">Car Parking</p>
               </div>
               <h2 className="fw-bold">
-                {data.length}
+                {occupiedCount}
 
                 <span className="fs-6 fw-normal"> car</span>
               </h2>
@@ -51,14 +83,14 @@ function Dashboard() {
 
                   Object.entries(data).map(([idx, slot]) => (
                     <div key={idx}>
-                    {slot.map((car) => (
-                      <p key={car.id_car} className="fw-normal fs-5 mt-2">
-                        {car.datetimeLocal} {car.username} {car.license}
-                      </p>
-                    ))}
-                  </div>
+                      {slot.map((car) => (
+                        <p key={car.id_car} className="fw-normal fs-5 mt-2">
+                          {car.datetimeLocal} {car.username} {car.license}
+                        </p>
+                      ))}
+                    </div>
                   )
-                )) :  (
+                  )) : (
                   <p className="fw-normal fs-5 mt-2">Empty</p>
                 )}
                 <span className="fs-6 fw-normal"></span>
