@@ -19,13 +19,13 @@
 | Student ID | Name | Duty | Profile |
 |--|--|--|--|
 | 67070092 | นายนิพพิชฌน์ คงห้วยรอบ | Arduino ORC | <img src="Web_project/images/pitch.png" width="150">|
-| 67070109 | นายพรพิพัฒน์ ลลิตวิภาส |OpenCV Arduino | <img src="Web_project/images/toby.png" width="150"> |
-| 67070148 | นางสาวเยาวภา ถาวรวิริยะนันท์ | Web | <img src="Web_project/images/bamboo.png" width="150"> |
+| 67070109 | นายพรพิพัฒน์ ลลิตวิภาส |OpenCV Arduino | <img src="Web_project/images/tobyC.png" width="150"> |
+| 67070148 | นางสาวเยาวภา ถาวรวิริยะนันท์ | Web | <img src="Web_project/images/bambooC.png" width="150"> |
 
 ## Tools
 | Arduino Uno R4 | HC-SR04 | Servo Motor |
 |--|--|--|
-| <img src="Web_project/images/arduino.png" width="150"> | <img src="Web_project/images/HC-SR04.png" width="150"> | <img src="Web_project/images/servo.png" width="150"> |
+| <img src="Web_project/images/arduino.png" width="150"> | <img src="Web_project/images/HC-SR04.png" width="150"> | <img src="Web_project/images/servoc.png" width="150"> |
 
 
 ## Source
