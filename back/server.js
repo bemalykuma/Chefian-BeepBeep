@@ -175,7 +175,7 @@ app.post("/api/dataPy", async (req, res) => {
 
 app.get("/arduino/data2", (req, res) => {
   res.json({ value: arduinoData2 });
-  console.log("Arduino requested data2:", arduinoData2);
+  // console.log("Arduino requested data2:", arduinoData2);
 
   // รีเซ็ตกลับเป็น 0 เพื่อไม่ให้เปิดซ้ำ
   if (arduinoData2 === 1) {
