@@ -4,7 +4,7 @@ html {
     scroll-behavior: smooth;
 }
 body {
-    background: linear-gradient(to bottom, #ff2aad 0%, #ffe9ee 10%);
+    background: linear-gradient(to bottom, #ff5bc0 0%, #ffe9ee 10%);
     margin: 0;
     font-family: 'Kanit', sans-serif;
 }
@@ -239,7 +239,7 @@ img {
 footer {
     text-align: center;
     padding: 1px;
-    background-color: #ff2aad;
+    background-color: #ff5bc0;
     font-size: 14px;
     color: #ffffffaf;
 }
@@ -251,7 +251,7 @@ iframe {
 }
 
 h1 {
-    color: #ff2aad;
+    color: #ff5bc0;
     font-size: 35px;
 }
 
@@ -270,6 +270,10 @@ h1 {
 
 .detail {
     text-align: left;
+}
+.detail h2 {
+    color: #ff5bc0;
+
 }
 
 
@@ -413,3 +417,23 @@ pre {
         right: 5px;
     }
 }
+
+.cad {
+    background-color: #fff;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 980px;
+}
+
+.bigbox {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    grid-column-gap: 90px;
+}
+
+.box1 { grid-area: 1 / 1 / 2 / 3; }
+.box2 { grid-area: 2 / 1 / 3 / 2; }
+.box3 { grid-area: 2 / 2 / 3 / 3; }
