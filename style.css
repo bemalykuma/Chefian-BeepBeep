@@ -1,0 +1,415 @@
+@import url('https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Noto+Sans+Thai:wght@100..900&display=swap');
+
+html {
+    scroll-behavior: smooth;
+}
+body {
+    background: linear-gradient(to bottom, #ff2aad 0%, #ffe9ee 10%);
+    margin: 0;
+    font-family: 'Kanit', sans-serif;
+}
+
+nav {
+    margin: 20px;
+    padding: 10px;
+    position: fixed;
+    width: 95%;
+    top: 0;
+    z-index: 20;
+}
+
+.navbar {
+    height: 60px;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+
+}
+
+.logo {
+    font-size: 20px;
+    font-weight: bold;
+    color: #000;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.icon {
+    width: auto;
+    height: 40px;
+}
+
+
+.menu {
+    display: flex;
+    gap: 20px;
+}
+
+.menu a {
+    text-decoration: none;
+    color: #000;
+    font-weight: bold;
+    font-size: 16px;
+    transition: color 0.3s ease;
+}
+
+.menu a:hover {
+    color: rgb(255, 105, 180);
+}
+
+
+.hamburger {
+    display: none;
+    flex-direction: column;
+    cursor: pointer;
+    gap: 5px;
+}
+
+.hamburger span {
+    width: 25px;
+    height: 3px;
+    background: #000;
+    border-radius: 5px;
+    transition: 0.3s;
+}
+
+@media (max-width: 768px) {
+    .menu {
+        display: none;
+        flex-direction: column;
+        background: #fff;
+        position: absolute;
+        top: 85px;
+        right: 0;
+        width: 100px;
+        border-radius: 10px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        padding: 10px 10px;
+    }
+    
+    .menu.show {
+        display: flex;
+    }
+    
+    .hamburger {
+        display: flex;
+    }
+    
+    iframe {
+        width: 90%;
+        height: auto;
+    }
+    
+    .project-card {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 20px;
+
+    }
+    
+}
+
+
+section {
+    display: flex;
+    justify-content: center;
+    margin: 30px 0;
+}
+
+.content {
+    text-align: start;
+    margin:0 60px;
+    width: 70%;
+    padding: 30px 0;
+    height: auto;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    margin-top: 50px;
+    
+}
+
+.project-card {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+
+}
+
+.team-members {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 100px;
+    margin-top: 30px;
+}
+
+
+img {
+    border-radius: 5px;
+    width: 250px;
+    height: auto;
+    object-fit: cover;
+    
+}
+.card {
+    border-radius: 5px;
+    width: 400px;
+    height: auto;
+    object-fit: cover;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 10px;
+    background-color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 10px;
+}
+.card img {
+    width: 400px;
+}
+
+/* Wrapper ช่วยให้ container อยู่กลาง */
+.tools-wrapper {
+    text-align: center;        /* ให้ inline-flex กลาง */
+    overflow-x: auto;          /* เลื่อนได้แนวนอน */
+    overflow-y: hidden;        /* ไม่เลื่อนแนวตั้ง */
+    padding-bottom: 10px;      /* เผื่อ scrollbar */
+    scroll-behavior: smooth;   /* เลื่อนนุ่ม */
+}
+/* Container ของ card */
+.tools-container {
+    display: inline-flex;      /* เปลี่ยนจาก flex เป็น inline-flex */
+    gap: 20px;                 /* ช่องว่างระหว่าง card */
+    flex-wrap: nowrap;         /* ป้องกันขึ้นบรรทัดใหม่ */
+}
+
+/* Card */
+.tool_card {
+    border-radius: 10px;
+    width: 300px;
+    background-color: white;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    padding: 10px;
+    font-size: 18px;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+}
+
+.tool_card img {
+    width: 100%;
+    border-radius: 8px;
+    object-fit: cover;
+}
+
+
+
+/* Scrollbar สวย */
+.tools-wrapper::-webkit-scrollbar {
+    height: 8px;
+}
+
+.tools-wrapper::-webkit-scrollbar-thumb {
+    background: #ff90d4;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.tools-wrapper::-webkit-scrollbar-track {
+    background: #fcb8e2;
+}
+
+/* Responsive: ลดขนาด card บนมือถือ */
+@media (max-width: 768px) {
+    .tool_card {
+        width: 200px;
+        font-size: 16px;
+    }
+}
+
+footer {
+    text-align: center;
+    padding: 1px;
+    background-color: #ff2aad;
+    font-size: 14px;
+    color: #ffffffaf;
+}
+iframe {
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 60px;
+}
+
+h1 {
+    color: #ff2aad;
+    font-size: 35px;
+}
+
+#aboutus {
+    background-color: #2c2c2c;
+    bottom: 0;
+    margin-bottom: 0;
+    padding-bottom: 60px;
+    color: white;
+}
+
+.member img {
+    width: 200px;
+    height: 250px;
+}
+
+.detail {
+    text-align: left;
+}
+
+
+pre {
+  background-color: #474146;
+  padding: 10px;
+  border-radius: 5px;
+  overflow-x: auto;
+  width: 100%;
+  max-height: 500px;
+  max-width: 900px;
+  white-space: pre;
+  font-family: Consolas, Monaco, 'Courier New', monospace;
+  color: #ffe7fa;
+  margin: 0;
+  box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5);
+  justify-self: center;
+  
+  text-align: left !important;   /* 🔥 บังคับชิดซ้าย */
+
+}
+
+
+.git {
+    margin-top: 20px;
+    padding: 1px;
+    background-color: #ff5bc0;
+    border-radius: 5px;
+    color: white;
+    text-decoration: none;
+    
+    font-weight: bold;
+    cursor: pointer;
+    width: 150px;
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+    transition: background-color 0.3s ease;
+}
+.git:hover {
+    background-color: #ff2aad;
+}
+.poster {
+    color: #ff2aad;
+}
+.carousel-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 1000px; /* ขนาดสูงสุด */
+    margin: 0 auto; /* จัดกลาง */
+    overflow: hidden;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    height: 550px; /* สูงเริ่มต้น */
+    z-index: 10;
+}
+
+.carousel-container {
+    display: flex;
+    transition: transform 0.5s ease-in-out;
+    height: 100%;
+}
+
+.carousel-container img {
+    width: 100%;
+    flex-shrink: 0;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+/* ปุ่ม */
+.carousel-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(200, 2, 121, 0.4);
+    color: rgb(255, 255, 255);
+    border: none;
+    font-size: 40px;
+    cursor: pointer;
+    padding: 5px 10px;
+    border-radius: 5px;
+    z-index: 10;
+    transition: background 0.3s;
+}
+
+.carousel-btn:hover {
+    background: rgba(0, 0, 0, 0.7);
+}
+
+.prev {
+    left: 10px;
+}
+
+.next {
+    right: 10px;
+}
+
+/* ---------- Responsive ---------- */
+
+/* แท็บเล็ต (จอกว้าง ≤ 992px) */
+@media (max-width: 992px) {
+    .carousel-wrapper {
+        height: 450px;
+    }
+    .carousel-btn {
+        font-size: 30px;
+        padding: 4px 8px;
+    }
+}
+
+/* มือถือแนวนอน (≤ 768px) */
+@media (max-width: 768px) {
+    .carousel-wrapper {
+        height: 350px;
+    }
+    .carousel-btn {
+        font-size: 28px;
+        padding: 3px 6px;
+    }
+}
+
+/* มือถือแนวตั้ง (≤ 576px) */
+@media (max-width: 576px) {
+    .carousel-wrapper {
+        height: 250px;
+        border-radius: 8px;
+    }
+    .carousel-container img {
+        border-radius: 8px;
+    }
+    .carousel-btn {
+        font-size: 22px;
+        padding: 2px 5px;
+        background: rgba(200, 2, 121, 0.5);
+    }
+    .prev {
+        left: 5px;
+    }
+    .next {
+        right: 5px;
+    }
+}
