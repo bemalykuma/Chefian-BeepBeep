@@ -18,21 +18,21 @@
 ### Contributor
 | Student ID | Name | Duty | Profile |
 |--|--|--|--|
-| 67070092 | นายนิพพิชฌน์ คงห้วยรอบ | Arduino ORC | <img src="Web_project/images/pitch.png" width="150">|
-| 67070109 | นายพรพิพัฒน์ ลลิตวิภาส |OpenCV Arduino | <img src="Web_project/images/tobyC.png" width="150"> |
-| 67070148 | นางสาวเยาวภา ถาวรวิริยะนันท์ | Web | <img src="Web_project/images/bambooC.png" width="150"> |
+| 67070092 | นายนิพพิชฌน์ คงห้วยรอบ | Arduino ORC | <img src="/images/pitch.png" width="150">|
+| 67070109 | นายพรพิพัฒน์ ลลิตวิภาส |OpenCV Arduino | <img src="/images/tobyC.png" width="150"> |
+| 67070148 | นางสาวเยาวภา ถาวรวิริยะนันท์ | Web | <img src="/images/bambooC.png" width="150"> |
 
 ## Tools
 | Arduino Uno R4 | HC-SR04 | Servo Motor |
 |--|--|--|
-| <img src="Web_project/images/arduino.png" width="150"> | <img src="Web_project/images/HC-SR04.png" width="150"> | <img src="Web_project/images/servoc.png" width="150"> |
+| <img src="/images/arduino.png" width="150"> | <img src="/images/HC-SR04.png" width="150"> | <img src="/images/servoc.png" width="150"> |
 
 
 ## Web github.io
 <a href = "[https://drive.google.com/drive/folders/1e_FzrNQVKajnIAMAk_B2tNfzFBrcT_Pi](https://bemalykuma.github.io/Chefian-BeepBeep/)">https://bemalykuma.github.io/Chefian-BeepBeep/</a>
 ## Demo Video
 ## Poster
-<a href = "https://drive.google.com/drive/folders/1e_FzrNQVKajnIAMAk_B2tNfzFBrcT_Pi"><img src="Web_project/images/Poster.png"></a>
+<a href = "https://drive.google.com/drive/folders/1e_FzrNQVKajnIAMAk_B2tNfzFBrcT_Pi"><img src="/images/Poster.png"></a>
 
 ## Source
 - https://www.youtube.com/watch?v=DF7A-Sq3MlU
