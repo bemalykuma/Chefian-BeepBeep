@@ -31,6 +31,7 @@
 ## Web github.io
 <a href = "[https://drive.google.com/drive/folders/1e_FzrNQVKajnIAMAk_B2tNfzFBrcT_Pi](https://bemalykuma.github.io/Chefian-BeepBeep/)">https://bemalykuma.github.io/Chefian-BeepBeep/</a>
 ## Demo Video
+<a href = "https://youtu.be/BhFZd1IMA2g?si=ESiJ9SHZob7C5RbK">https://youtu.be/BhFZd1IMA2g?si=ESiJ9SHZob7C5RbK</a>
 ## Poster
 <a href = "https://drive.google.com/drive/folders/1e_FzrNQVKajnIAMAk_B2tNfzFBrcT_Pi"><img src="/images/Poster.png" width="600"></a>
 
