@@ -18,8 +18,8 @@
 ### Contributor
 | Student ID | Name | Duty | Profile |
 |--|--|--|--|
-| 67070092 | นายนิพพิชฌน์ คงห้วยรอบ | Arduino ORC | <img src="/images/pitch.png" width="150">|
-| 67070109 | นายพรพิพัฒน์ ลลิตวิภาส |OpenCV Arduino | <img src="/images/tobyC.png" width="150"> |
+| 67070092 | นายนิพพิชฌน์ คงห้วยรอบ | Arduino OCR | <img src="/images/pitch.png" width="150">|
+| 67070109 | นายพรพิพัฒน์ ลลิตวิภาส | OpenCV Arduino | <img src="/images/tobyC.png" width="150"> |
 | 67070148 | นางสาวเยาวภา ถาวรวิริยะนันท์ | Web | <img src="/images/bambooC.png" width="150"> |
 
 ## Tools
